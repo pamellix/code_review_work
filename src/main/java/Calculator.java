@@ -21,5 +21,6 @@ public class Calculator {
         int k = div(b, result);
 
         return k;
+
     }
 }
