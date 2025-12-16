@@ -14,13 +14,13 @@ public class Calculator {
     public int solver(int a, int b, String type) {
         switch (type) {
             case "add":
-                return add(a, b)
+                return add(a, b);
             case "dif":
-                return dif(a, b)
+                return dif(a, b);
             case "div":
-                return div(a, b)
+                return div(a, b);
             default:
-                return times(a, b)
+                return times(a, b);
         }
     }
 }
