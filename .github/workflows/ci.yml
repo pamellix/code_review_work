@@ -2,12 +2,12 @@ name: Java Matrix CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   schedule:
-    - cron: "30 12 * * 3"
-    - cron: "0 22 * * 5"
+    - cron: "30 12 * * 3"   # Wed 12:30 UTC
+    - cron: "0 22 * * 5"    # Fri 22:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -16,23 +16,34 @@ permissions:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        java: [ "11", "13", "17" ]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java: ["11", "13", "17"]
+        include:
+          - java: "11"
+            distribution: "temurin"
+          - java: "13"
+            distribution: "zulu"
+          - java: "17"
+            distribution: "temurin"
+
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Set up JDK ${{matrix.java}}
+      - name: Set up JDK ${{ matrix.java }} (${{ matrix.distribution }})
         uses: actions/setup-java@v5
         with:
-          java-version: ${{matrix.java}}
-          distribution: "temurin"
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: "8.7"
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: gradle build
